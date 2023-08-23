@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "file": "this is a stub because the inlined base64 stuff from perspective has hard-coded this URL",
+  "sourceRoot": "",
+  "sources": [
+    "perspective.worker.js"
+  ],
+  "sourcesContent": [
+    null,
+    null
+  ],
+  "names": [],
+  "mappings": ""
+}
