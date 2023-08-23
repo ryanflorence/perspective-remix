@@ -11,6 +11,7 @@
   "dependencies": {
     "@finos/perspective": "^2.3.2",
     "@finos/perspective-viewer": "^2.3.2",
+    "@finos/perspective-viewer-datagrid": "^2.5.0",
     "@remix-run/css-bundle": "^1.19.2",
     "@remix-run/express": "^1.19.2",
     "@remix-run/node": "^1.19.2",

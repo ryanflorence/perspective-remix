@@ -1,23 +1,28 @@
 import perspective, { type Table, type TableData } from "@finos/perspective";
-import "@finos/perspective-viewer";
 import { type HTMLPerspectiveViewerElement } from "@finos/perspective-viewer";
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export function PerspectiveViewer({ data }: { data: TableData }) {
-  const id = useId();
-  const ref = useRef<null | Table>(null);
+  const tableRef = useRef<null | Table>(null);
+  const elRef = useRef<HTMLPerspectiveViewerElement | null>(null);
 
   useEffect(() => {
-    if (ref.current === null) {
+    if (tableRef.current === null) {
       init();
     } else {
-      ref.current.update(data);
+      tableRef.current.update(data);
     }
 
     async function init() {
-      const el = document.querySelector(
-        "perspective-viewer",
-      ) as HTMLPerspectiveViewerElement;
+      await Promise.all([
+        // point to the ESM build get wasm loaded externally instead of inlined
+        // so it runs on its own thread
+        import("@finos/perspective-viewer/dist/esm/perspective-viewer.js"),
+        import("@finos/perspective-viewer-datagrid"),
+      ]);
+
+      const el = elRef.current;
+      if (!el) throw new Error("no element!");
 
       const worker = perspective.worker();
 
@@ -25,16 +30,9 @@ export function PerspectiveViewer({ data }: { data: TableData }) {
       const table = await worker.table(data);
 
       el.load(table);
-      ref.current = table;
+      tableRef.current = table;
     }
   }, [data]);
 
-  // return <perspective-viewer id={id} suppressHydrationWarning />;
-  return (
-    <perspective-viewer
-      id={id}
-      style={{ width: 500, height: 500 }}
-      theme="Pro"
-    />
-  );
+  return <perspective-viewer ref={elRef} style={{ width: 500, height: 500 }} />;
 }
